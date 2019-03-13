@@ -9,16 +9,15 @@ class FS:
 		self.n = n
 		self.npar = npar
 		self.nchi = nchi
-		self.eval_count = 0
 		self.problem = problem
 		self.population = [Individual(self.n) for i in range(npop)]
 		for i in self.population:
 			i.fitness = self.problem(i.gene)
+		self.eval_count = npop
 		self.history = {}
 		self.history[0] = self.get_best_fitness()
 		self.avg_history = {}
 		self.avg_history[0] = np.average([i.fitness for i in self.population])
-		self.eval_count = 0
 
 	def select_for_reproduction(self):
 		self.population.sort(key = lambda i: i.fitness)
