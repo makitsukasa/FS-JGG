@@ -73,7 +73,6 @@ class FSJGG(object):
 		elites = self.fs.population[:]
 		elites.sort(key = lambda i: i.fitness)
 		ret.extend(elites[:elites_count])
-		print(len(ret))
 		return ret
 
 	def choose_population_to_jgg_replace_losed_by_elites(self, elites_count = None):
@@ -85,7 +84,6 @@ class FSJGG(object):
 		elites = self.fs.population[:]
 		elites.sort(key = lambda i: i.fitness)
 		ret.extend(elites[:elites_count])
-		print(len(ret))
 		return ret
 
 if __name__ == '__main__':
