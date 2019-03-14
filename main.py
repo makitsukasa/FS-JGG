@@ -17,8 +17,8 @@ SAVE_CSV = False
 n = 20
 
 problems = [
-	# {"name" : "sphere",      "func" : sphere,      "npop" :  6 * n, "nchi" : 6 * n},
-	{"name" : "k-tablet",    "func" : ktablet,     "npop" :  8 * n, "nchi" : 6 * n},
+	{"name" : "sphere",      "func" : sphere,      "npop" :  6 * n, "nchi" : 6 * n},
+	# {"name" : "k-tablet",    "func" : ktablet,     "npop" :  8 * n, "nchi" : 6 * n},
 	# {"name" : "bohachevsky", "func" : bohachevsky, "npop" :  6 * n, "nchi" : 6 * n},
 	# {"name" : "ackley",      "func" : ackley,      "npop" :  8 * n, "nchi" : 6 * n},
 	# {"name" : "schaffer",    "func" : schaffer,    "npop" : 10 * n, "nchi" : 8 * n},
@@ -36,10 +36,14 @@ for problem in problems:
 	failed_count = {"JGG" : 0, "入替無" : 0}
 	eval_counts = {}
 	t = 1e-2
+	loop_count = 10000
 
-	print(name)
+	print(name, loop_count)
 
-	for i in range(10000):
+	for i in range(loop_count):
+		randseed = np.random.randint(0x7fffffff)
+
+		np.random.seed(randseed)
 		jgg = JGG(n, npop, npar, nchi, func)
 		result = jgg.until(1e-7, 300000)
 		if result:
@@ -48,7 +52,7 @@ for problem in problems:
 			else:
 				eval_counts["JGG"] = [jgg.eval_count]
 		else:
-			print("JGG failed")
+			print("JGG failed", randseed)
 			failed_count["JGG"] += 1
 
 		if SAVE_CSV:
@@ -58,6 +62,7 @@ for problem in problems:
 					f.write("{0},{1}\n".format(c, v))
 				f.close()
 
+		np.random.seed(randseed)
 		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
 		fsjgg.choose_population_to_jgg =\
 			fsjgg.choose_population_to_jgg_not_replace
@@ -68,7 +73,7 @@ for problem in problems:
 			else:
 				eval_counts["入替無"] = [fsjgg.get_eval_count()]
 		else:
-			print("入替無 failed")
+			print("入替無 failed", randseed)
 			failed_count["入替無"] += 1
 
 		if SAVE_CSV:
