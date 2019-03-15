@@ -33,9 +33,6 @@ for problem in problems:
 	npop = problem["npop"]
 	npar = n + 1
 	nchi = problem["nchi"]
-	jgg_counts = []
-	bgg_barometric_counts = []
-	bgg_fixed_counts = []
 	eval_counts = {}
 	t = 1e-2
 	loop_count = 10000
