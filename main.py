@@ -141,45 +141,45 @@ for problem in problems:
 		# 			f.write("{0},{1}\n".format(c, v))
 		# 		f.close()
 
-		np.random.seed(randseed)
-		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
-		fsjgg.choose_population_to_jgg =\
-			fsjgg.choose_population_to_jgg_replace_rand_by_elites
-		result = fsjgg.until(1e-7, 300000)
-		if result:
-			if "ラ" in eval_counts:
-				eval_counts["ラ"].append(fsjgg.get_eval_count())
-			else:
-				eval_counts["ラ"] = [fsjgg.get_eval_count()]
-		else:
-			print("ラ failed", randseed)
+		# np.random.seed(randseed)
+		# fsjgg = FSJGG(t, n, npop, npar, nchi, func)
+		# fsjgg.choose_population_to_jgg =\
+		# 	fsjgg.choose_population_to_jgg_replace_rand_by_elites
+		# result = fsjgg.until(1e-7, 300000)
+		# if result:
+		# 	if "ラ" in eval_counts:
+		# 		eval_counts["ラ"].append(fsjgg.get_eval_count())
+		# 	else:
+		# 		eval_counts["ラ"] = [fsjgg.get_eval_count()]
+		# else:
+		# 	print("ラ failed", randseed)
 
-		if SAVE_CSV:
-			filename = "benchmark/{0}_ラ_{1}_{2}.csv".format(datestr, name, i)
-			with open(filename, "w") as f:
-				for c, v in fsjgg.history.items():
-					f.write("{0},{1}\n".format(c, v))
-				f.close()
+		# if SAVE_CSV:
+		# 	filename = "benchmark/{0}_ラ_{1}_{2}.csv".format(datestr, name, i)
+		# 	with open(filename, "w") as f:
+		# 		for c, v in fsjgg.history.items():
+		# 			f.write("{0},{1}\n".format(c, v))
+		# 		f.close()
 
-		np.random.seed(randseed)
-		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
-		fsjgg.choose_population_to_jgg =\
-			fsjgg.choose_population_to_jgg_replace_losed_by_elites
-		result = fsjgg.until(1e-7, 300000)
-		if result:
-			if "劣" in eval_counts:
-				eval_counts["劣"].append(fsjgg.get_eval_count())
-			else:
-				eval_counts["劣"] = [fsjgg.get_eval_count()]
-		else:
-			print("劣 failed", randseed)
+		# np.random.seed(randseed)
+		# fsjgg = FSJGG(t, n, npop, npar, nchi, func)
+		# fsjgg.choose_population_to_jgg =\
+		# 	fsjgg.choose_population_to_jgg_replace_losed_by_elites
+		# result = fsjgg.until(1e-7, 300000)
+		# if result:
+		# 	if "劣" in eval_counts:
+		# 		eval_counts["劣"].append(fsjgg.get_eval_count())
+		# 	else:
+		# 		eval_counts["劣"] = [fsjgg.get_eval_count()]
+		# else:
+		# 	print("劣 failed", randseed)
 
-		if SAVE_CSV:
-			filename = "benchmark/{0}_劣_{1}_{2}.csv".format(datestr, name, i)
-			with open(filename, "w") as f:
-				for c, v in fsjgg.history.items():
-					f.write("{0},{1}\n".format(c, v))
-				f.close()
+		# if SAVE_CSV:
+		# 	filename = "benchmark/{0}_劣_{1}_{2}.csv".format(datestr, name, i)
+		# 	with open(filename, "w") as f:
+		# 		for c, v in fsjgg.history.items():
+		# 			f.write("{0},{1}\n".format(c, v))
+		#		f.close()
 
 	for name, eval_count in eval_counts.items():
 		print(name, np.average(eval_count))
