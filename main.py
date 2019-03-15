@@ -44,7 +44,7 @@ for problem in problems:
 
 	for i in range(loop_count):
 		np.random.seed()
-		randseed = np.random.randint(7fffffff)
+		randseed = np.random.randint(0x7fffffff)
 
 		np.random.seed(randseed)
 		jgg = JGG(n, npop, npar, nchi, func)
