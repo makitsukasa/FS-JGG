@@ -17,11 +17,11 @@ SAVE_CSV = False
 n = 20
 
 problems = [
-	{"name" : "sphere",      "func" : sphere,      "npop" :  6 * n, "nchi" : 6 * n},
-	# {"name" : "k-tablet",    "func" : ktablet,     "npop" :  8 * n, "nchi" : 6 * n},
-	# {"name" : "bohachevsky", "func" : bohachevsky, "npop" :  6 * n, "nchi" : 6 * n},
+	# {"name" : "sphere",      "func" : sphere,      "npop" :  6 * n, "nchi" : 6 * n},
+	# {"name" : "k-tablet",    "func" : ktablet,     "npop" :  10 * n, "nchi" : 6 * n},
+	# {"name" : "bohachevsky", "func" : bohachevsky, "npop" :  8 * n, "nchi" : 6 * n},
 	# {"name" : "ackley",      "func" : ackley,      "npop" :  8 * n, "nchi" : 6 * n},
-	# {"name" : "schaffer",    "func" : schaffer,    "npop" : 10 * n, "nchi" : 8 * n},
+	{"name" : "schaffer",    "func" : schaffer,    "npop" : 11 * n, "nchi" : 8 * n},
 	# {"name" : "rastrigin",   "func" : rastrigin,   "npop" : 24 * n, "nchi" : 8 * n},
 ]
 
@@ -35,9 +35,9 @@ for problem in problems:
 	nchi = problem["nchi"]
 	eval_counts = {}
 	t = 1e-2
-	loop_count = 10000
+	loop_count = 2000
 
-	print(name, loop_count)
+	print(name, loop_count, flush = True)
 
 	for i in range(loop_count):
 		np.random.seed()
@@ -101,45 +101,45 @@ for problem in problems:
 					f.write("{0},{1}\n".format(c, v))
 				f.close()
 
-		# np.random.seed(randseed)
-		# fsjgg = FSJGG(t, n, npop, npar, nchi, func)
-		# fsjgg.choose_population_to_jgg = lambda :\
-		# 	fsjgg.choose_population_to_jgg_replace_rand_parents_by_elites(npar // 3)
-		# result = fsjgg.until(1e-7, 300000)
-		# if result:
-		# 	if "ラ親" in eval_counts:
-		# 		eval_counts["ラ親"].append(fsjgg.get_eval_count())
-		# 	else:
-		# 		eval_counts["ラ親"] = [fsjgg.get_eval_count()]
-		# else:
-		# 	print("ラ親 failed", randseed)
+		np.random.seed(randseed)
+		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
+		fsjgg.choose_population_to_jgg = lambda :\
+			fsjgg.choose_population_to_jgg_replace_rand_parents_by_elites(npar // 3)
+		result = fsjgg.until(1e-7, 300000)
+		if result:
+			if "ラ親" in eval_counts:
+				eval_counts["ラ親"].append(fsjgg.get_eval_count())
+			else:
+				eval_counts["ラ親"] = [fsjgg.get_eval_count()]
+		else:
+			print("ラ親 failed", randseed)
 
-		# if SAVE_CSV:
-		# 	filename = "benchmark/{0}_ラ親_{1}_{2}.csv".format(datestr, name, i)
-		# 	with open(filename, "w") as f:
-		# 		for c, v in fsjgg.history.items():
-		# 			f.write("{0},{1}\n".format(c, v))
-		# 		f.close()
+		if SAVE_CSV:
+			filename = "benchmark/{0}_ラ親_{1}_{2}.csv".format(datestr, name, i)
+			with open(filename, "w") as f:
+				for c, v in fsjgg.history.items():
+					f.write("{0},{1}\n".format(c, v))
+				f.close()
 
-		# np.random.seed(randseed)
-		# fsjgg = FSJGG(t, n, npop, npar, nchi, func)
-		# fsjgg.choose_population_to_jgg = lambda :\
-		# 	fsjgg.choose_population_to_jgg_replace_losed_parents_by_elites(npar // 3)
-		# result = fsjgg.until(1e-7, 300000)
-		# if result:
-		# 	if "劣親" in eval_counts:
-		# 		eval_counts["劣親"].append(fsjgg.get_eval_count())
-		# 	else:
-		# 		eval_counts["劣親"] = [fsjgg.get_eval_count()]
-		# else:
-		# 	print("劣親 failed", randseed)
+		np.random.seed(randseed)
+		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
+		fsjgg.choose_population_to_jgg = lambda :\
+			fsjgg.choose_population_to_jgg_replace_losed_parents_by_elites(npar // 3)
+		result = fsjgg.until(1e-7, 300000)
+		if result:
+			if "劣親" in eval_counts:
+				eval_counts["劣親"].append(fsjgg.get_eval_count())
+			else:
+				eval_counts["劣親"] = [fsjgg.get_eval_count()]
+		else:
+			print("劣親 failed", randseed)
 
-		# if SAVE_CSV:
-		# 	filename = "benchmark/{0}_劣親_{1}_{2}.csv".format(datestr, name, i)
-		# 	with open(filename, "w") as f:
-		# 		for c, v in fsjgg.history.items():
-		# 			f.write("{0},{1}\n".format(c, v))
-		# 		f.close()
+		if SAVE_CSV:
+			filename = "benchmark/{0}_劣親_{1}_{2}.csv".format(datestr, name, i)
+			with open(filename, "w") as f:
+				for c, v in fsjgg.history.items():
+					f.write("{0},{1}\n".format(c, v))
+				f.close()
 
 		np.random.seed(randseed)
 		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
@@ -182,4 +182,4 @@ for problem in problems:
 				f.close()
 
 	for name, eval_count in eval_counts.items():
-		print(name, np.average(eval_count))
+		print(name, np.average(eval_count), loop_count - len(eval_count))
