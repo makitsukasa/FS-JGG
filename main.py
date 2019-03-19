@@ -14,38 +14,40 @@ warnings.simplefilter("error", RuntimeWarning)
 
 SAVE_CSV = False
 
-n = 20
+N = 20
+GOAL = 1e-7
+MAX_EVAL_COUNT = 2**18
+T = 1e-2
+LOOP_COUNT = 1
 
-problems = [
-	# {"name" : "sphere",      "func" : sphere,      "npop" :  6 * n, "nchi" : 6 * n},
-	# {"name" : "k-tablet",    "func" : ktablet,     "npop" :  10 * n, "nchi" : 6 * n},
-	# {"name" : "bohachevsky", "func" : bohachevsky, "npop" :  8 * n, "nchi" : 6 * n},
-	# {"name" : "ackley",      "func" : ackley,      "npop" :  8 * n, "nchi" : 6 * n},
-	{"name" : "schaffer",    "func" : schaffer,    "npop" : 11 * n, "nchi" : 8 * n},
-	# {"name" : "rastrigin",   "func" : rastrigin,   "npop" : 24 * n, "nchi" : 8 * n},
+PROBLEMS = [
+	{"name" : "sphere",      "func" : sphere,      "npop" :  6 * N, "nchi" : 6 * N},
+	{"name" : "k-tablet",    "func" : ktablet,     "npop" : 10 * N, "nchi" : 6 * N},
+	{"name" : "bohachevsky", "func" : bohachevsky, "npop" :  8 * N, "nchi" : 6 * N},
+	{"name" : "ackley",      "func" : ackley,      "npop" :  8 * N, "nchi" : 6 * N},
+	{"name" : "schaffer",    "func" : schaffer,    "npop" : 11 * N, "nchi" : 8 * N},
+	{"name" : "rastrigin",   "func" : rastrigin,   "npop" : 24 * N, "nchi" : 8 * N},
 ]
 
 datestr = "{0:%Y-%m-%d_%H-%M-%S}".format(datetime.datetime.now())
 
-for problem in problems:
+for problem in PROBLEMS:
 	func = problem["func"]
 	name = problem["name"]
 	npop = problem["npop"]
-	npar = n + 1
+	npar = N + 1
 	nchi = problem["nchi"]
 	eval_counts = {}
-	t = 1e-2
-	loop_count = 2000
 
-	print(name, loop_count, flush = True)
+	print(name, LOOP_COUNT, flush = True)
 
-	for i in range(loop_count):
+	for i in range(LOOP_COUNT):
 		np.random.seed()
 		randseed = np.random.randint(0x7fffffff)
 
 		np.random.seed(randseed)
-		jgg = JGG(n, npop, npar, nchi, func)
-		result = jgg.until(1e-7, 300000)
+		jgg = JGG(N, npop, npar, nchi, func)
+		result = jgg.until(GOAL, MAX_EVAL_COUNT)
 		if result:
 			if "JGG" in eval_counts:
 				eval_counts["JGG"].append(jgg.eval_count)
@@ -62,10 +64,10 @@ for problem in problems:
 				f.close()
 
 		np.random.seed(randseed)
-		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
+		fsjgg = FSJGG(T, N, npop, npar, nchi, func)
 		fsjgg.choose_population_to_jgg =\
 			fsjgg.choose_population_to_jgg_not_replace
-		result = fsjgg.until(1e-7, 300000)
+		result = fsjgg.until(GOAL, MAX_EVAL_COUNT)
 		if result:
 			if "入替無" in eval_counts:
 				eval_counts["入替無"].append(fsjgg.get_eval_count())
@@ -82,10 +84,10 @@ for problem in problems:
 				f.close()
 
 		np.random.seed(randseed)
-		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
+		fsjgg = FSJGG(T, N, npop, npar, nchi, func)
 		fsjgg.choose_population_to_jgg =\
 			fsjgg.choose_population_to_jgg_replace_rand_parents_by_elites
-		result = fsjgg.until(1e-7, 300000)
+		result = fsjgg.until(GOAL, MAX_EVAL_COUNT)
 		if result:
 			if "親全部" in eval_counts:
 				eval_counts["親全部"].append(fsjgg.get_eval_count())
@@ -102,10 +104,10 @@ for problem in problems:
 				f.close()
 
 		np.random.seed(randseed)
-		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
+		fsjgg = FSJGG(T, N, npop, npar, nchi, func)
 		fsjgg.choose_population_to_jgg = lambda :\
 			fsjgg.choose_population_to_jgg_replace_rand_parents_by_elites(npar // 3)
-		result = fsjgg.until(1e-7, 300000)
+		result = fsjgg.until(GOAL, MAX_EVAL_COUNT)
 		if result:
 			if "ラ親" in eval_counts:
 				eval_counts["ラ親"].append(fsjgg.get_eval_count())
@@ -122,10 +124,10 @@ for problem in problems:
 				f.close()
 
 		np.random.seed(randseed)
-		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
+		fsjgg = FSJGG(T, N, npop, npar, nchi, func)
 		fsjgg.choose_population_to_jgg = lambda :\
 			fsjgg.choose_population_to_jgg_replace_losed_parents_by_elites(npar // 3)
-		result = fsjgg.until(1e-7, 300000)
+		result = fsjgg.until(GOAL, MAX_EVAL_COUNT)
 		if result:
 			if "劣親" in eval_counts:
 				eval_counts["劣親"].append(fsjgg.get_eval_count())
@@ -142,10 +144,10 @@ for problem in problems:
 				f.close()
 
 		np.random.seed(randseed)
-		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
+		fsjgg = FSJGG(T, N, npop, npar, nchi, func)
 		fsjgg.choose_population_to_jgg =\
 			fsjgg.choose_population_to_jgg_replace_rand_by_elites
-		result = fsjgg.until(1e-7, 300000)
+		result = fsjgg.until(GOAL, MAX_EVAL_COUNT)
 		if result:
 			if "ラ" in eval_counts:
 				eval_counts["ラ"].append(fsjgg.get_eval_count())
@@ -162,10 +164,10 @@ for problem in problems:
 				f.close()
 
 		np.random.seed(randseed)
-		fsjgg = FSJGG(t, n, npop, npar, nchi, func)
+		fsjgg = FSJGG(T, N, npop, npar, nchi, func)
 		fsjgg.choose_population_to_jgg =\
 			fsjgg.choose_population_to_jgg_replace_losed_by_elites
-		result = fsjgg.until(1e-7, 300000)
+		result = fsjgg.until(GOAL, MAX_EVAL_COUNT)
 		if result:
 			if "劣" in eval_counts:
 				eval_counts["劣"].append(fsjgg.get_eval_count())
@@ -182,4 +184,4 @@ for problem in problems:
 				f.close()
 
 	for name, eval_count in eval_counts.items():
-		print(name, np.average(eval_count), loop_count - len(eval_count))
+		print(name, np.average(eval_count), LOOP_COUNT - len(eval_count))
