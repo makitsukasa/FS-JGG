@@ -1,8 +1,14 @@
 import sys
+import argparse
 import csv
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 
-def plot(filenames):
+font = {"family": "Noto Sans MONO CJK JP"}
+mpl.rc('font', **font)
+plt.rcParams["mathtext.default"] = "regular"
+
+def plot(filenames, log_scaled = False):
 	if isinstance(filenames, str):
 		filenames = [filenames]
 
@@ -14,14 +20,20 @@ def plot(filenames):
 			for row in reader:
 				x.append(row[0])
 				y.append(row[1])
-			plt.plot(x, y, linewidth = 0.5)
+			plt.plot(x, y, linewidth = 0.5, label = filename.split("\\")[-1].split(".")[0])
 
-	# plt.yscale("log")
+	if log_scaled:
+		plt.yscale("log")
+	plt.legend()
 	plt.show()
 
 if __name__ == '__main__':
 	if len(sys.argv) > 1:
-		plot(sys.argv[1:])
+		parser = argparse.ArgumentParser()
+		parser.add_argument("-f", "--files", nargs = "*")
+		parser.add_argument("-l", "--log_scaled", action = "store_true")
+		args = parser.parse_args()
+		plot(args.files, args.log_scaled)
 	else:
 		plot([
 			"benchmark/2019-03-10_03-13-11.csv",
