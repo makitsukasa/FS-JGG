@@ -16,14 +16,23 @@ def ttest(filenames, log_scaled = False):
 			reader = csv.reader(f, quoting = csv.QUOTE_NONNUMERIC)
 			datas[filename] = [x for x in reader]
 
+	for filename in filenames:
+		print(",", filename.split("\\")[-1].split(".")[0], end = "")
+	print()
+
 	for i in range(len(filenames)):
+		print(filenames[i].split("\\")[-1].split(".")[0], end = ",")
 		for j in range(len(filenames)):
 			result = stats.ttest_ind(datas[filenames[i]], datas[filenames[j]])
-			filename_i = filenames[i].split("\\")[-1].split(".")[0]
-			filename_j = filenames[j].split("\\")[-1].split(".")[0]
-			print(filename_i, filename_j,
-				"有意差:", "あり" if result.pvalue < 0.05 else "なし",
-				"t: {0:.3f} p: {1:.3f}".format(result.statistic[0], result.pvalue[0]))
+			if result.pvalue < 0.05:
+				# 有意差あり
+				print("◯" if result.statistic[0] < 0 else "✕", end = " ")
+			else:
+				# 有意差なし
+				print("- ")
+			print("({0:.3f}),".format(result.pvalue[0]), end = "")
+
+		print()
 
 if __name__ == '__main__':
 	if len(sys.argv) > 1:
