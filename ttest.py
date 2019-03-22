@@ -20,7 +20,7 @@ def ttest(filenames, log_scaled = False):
 
 	result = stats.ttest_ind(datas[filenames[0]], datas[filenames[1]])
 	print(result)
-	if result.pvalue < 0.025:
+	if result.pvalue < 0.05:
 		print("有意差あり")
 	else:
 		print("有意差なし")
