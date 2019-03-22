@@ -13,21 +13,21 @@ from problem.frontier.rastrigin   import rastrigin
 warnings.simplefilter("error", RuntimeWarning)
 
 SAVE_HISTORY_CSV = False
-SAVE_COUNTS_CSV = False
+SAVE_COUNTS_CSV = True
 
 N = 20
 GOAL = 1e-7
-MAX_EVAL_COUNT = 2**18
+MAX_EVAL_COUNT = 300000
 T = 1e-2
-LOOP_COUNT = 3
+LOOP_COUNT = 100
 
 PROBLEMS = [
 	{"name" : "sphere",      "func" : sphere,      "npop" :  6 * N, "nchi" : 6 * N},
 	{"name" : "k-tablet",    "func" : ktablet,     "npop" : 10 * N, "nchi" : 6 * N},
 	{"name" : "bohachevsky", "func" : bohachevsky, "npop" :  8 * N, "nchi" : 6 * N},
 	{"name" : "ackley",      "func" : ackley,      "npop" :  8 * N, "nchi" : 6 * N},
-	# {"name" : "schaffer",    "func" : schaffer,    "npop" : 11 * N, "nchi" : 8 * N},
-	# {"name" : "rastrigin",   "func" : rastrigin,   "npop" : 24 * N, "nchi" : 8 * N},
+	{"name" : "schaffer",    "func" : schaffer,    "npop" : 11 * N, "nchi" : 8 * N},
+	{"name" : "rastrigin",   "func" : rastrigin,   "npop" : 24 * N, "nchi" : 8 * N},
 ]
 
 datestr = "{0:%Y-%m-%d_%H-%M-%S}".format(datetime.datetime.now())
