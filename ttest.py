@@ -26,10 +26,10 @@ def ttest(filenames, log_scaled = False):
 			result = stats.ttest_ind(datas[filenames[i]], datas[filenames[j]])
 			if result.pvalue < 0.05:
 				# 有意差あり
-				print("◯" if result.statistic[0] < 0 else "✕", end = " ")
+				print("◯ " if result.statistic[0] < 0 else "✕ ", end = "")
 			else:
 				# 有意差なし
-				print("- ")
+				print("- ", end = "")
 			print("({0:.3f}),".format(result.pvalue[0]), end = "")
 
 		print()
