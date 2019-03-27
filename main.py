@@ -15,18 +15,18 @@ warnings.simplefilter("error", RuntimeWarning)
 SAVE_HISTORY_CSV = False
 SAVE_COUNTS_CSV = True
 
-N = 20
+N = 50
 GOAL = 1e-7
-MAX_EVAL_COUNT = 300000
+MAX_EVAL_COUNT = 2**21
 T = 1e-2
-LOOP_COUNT = 100
+LOOP_COUNT = 300
 
 PROBLEMS = [
-	{"name" : "sphere",      "func" : sphere,      "npop" :  6 * N, "nchi" : 6 * N},
-	{"name" : "k-tablet",    "func" : ktablet,     "npop" : 10 * N, "nchi" : 6 * N},
-	{"name" : "bohachevsky", "func" : bohachevsky, "npop" :  8 * N, "nchi" : 6 * N},
-	{"name" : "ackley",      "func" : ackley,      "npop" :  8 * N, "nchi" : 6 * N},
-	{"name" : "schaffer",    "func" : schaffer,    "npop" : 11 * N, "nchi" : 8 * N},
+	# {"name" : "sphere",      "func" : sphere,      "npop" :  6 * N, "nchi" : 6 * N},
+	# {"name" : "k-tablet",    "func" : ktablet,     "npop" : 10 * N, "nchi" : 6 * N},
+	# {"name" : "bohachevsky", "func" : bohachevsky, "npop" :  8 * N, "nchi" : 6 * N},
+	# {"name" : "ackley",      "func" : ackley,      "npop" :  8 * N, "nchi" : 6 * N},
+	# {"name" : "schaffer",    "func" : schaffer,    "npop" : 11 * N, "nchi" : 8 * N},
 	{"name" : "rastrigin",   "func" : rastrigin,   "npop" : 24 * N, "nchi" : 8 * N},
 ]
 
@@ -40,7 +40,7 @@ for problem in PROBLEMS:
 	nchi = problem["nchi"]
 	eval_counts = {}
 
-	print(name, LOOP_COUNT, flush = True)
+	print(N, name, LOOP_COUNT, flush = True)
 
 	for i in range(LOOP_COUNT):
 		np.random.seed()
