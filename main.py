@@ -12,22 +12,22 @@ from problem.frontier.rastrigin   import rastrigin
 
 warnings.simplefilter("error", RuntimeWarning)
 
-SAVE_HISTORY_CSV = False
-SAVE_COUNTS_CSV = True
+SAVE_HISTORY_CSV = True
+SAVE_COUNTS_CSV = False
 
 N = 20
 GOAL = 1e-7
-MAX_EVAL_COUNT = 300000
+MAX_EVAL_COUNT = 50 * N
 T = 1e-2
-LOOP_COUNT = 100
+LOOP_COUNT = 1
 
 PROBLEMS = [
 	{"name" : "sphere",      "func" : sphere,      "npop" :  6 * N, "nchi" : 6 * N},
-	{"name" : "k-tablet",    "func" : ktablet,     "npop" : 10 * N, "nchi" : 6 * N},
-	{"name" : "bohachevsky", "func" : bohachevsky, "npop" :  8 * N, "nchi" : 6 * N},
-	{"name" : "ackley",      "func" : ackley,      "npop" :  8 * N, "nchi" : 6 * N},
-	{"name" : "schaffer",    "func" : schaffer,    "npop" : 11 * N, "nchi" : 8 * N},
-	{"name" : "rastrigin",   "func" : rastrigin,   "npop" : 24 * N, "nchi" : 8 * N},
+	# {"name" : "k-tablet",    "func" : ktablet,     "npop" : 10 * N, "nchi" : 6 * N},
+	# {"name" : "bohachevsky", "func" : bohachevsky, "npop" :  8 * N, "nchi" : 6 * N},
+	# {"name" : "ackley",      "func" : ackley,      "npop" :  8 * N, "nchi" : 6 * N},
+	# {"name" : "schaffer",    "func" : schaffer,    "npop" : 11 * N, "nchi" : 8 * N},
+	# {"name" : "rastrigin",   "func" : rastrigin,   "npop" : 24 * N, "nchi" : 8 * N},
 ]
 
 datestr = "{0:%Y-%m-%d_%H-%M-%S}".format(datetime.datetime.now())
@@ -38,7 +38,7 @@ for problem in PROBLEMS:
 	npop = problem["npop"]
 	npar = N + 1
 	nchi = problem["nchi"]
-	eval_counts = {}
+	best_fitnesses = {}
 
 	print(name, LOOP_COUNT, flush = True)
 
@@ -49,13 +49,10 @@ for problem in PROBLEMS:
 		np.random.seed(randseed)
 		jgg = JGG(N, npop, npar, nchi, func)
 		result = jgg.until(GOAL, MAX_EVAL_COUNT)
-		if result:
-			if "JGG" in eval_counts:
-				eval_counts["JGG"].append(jgg.eval_count)
-			else:
-				eval_counts["JGG"] = [jgg.eval_count]
+		if "JGG" in best_fitnesses:
+			best_fitnesses["JGG"].append(jgg.get_best_fitness())
 		else:
-			print("JGG failed")
+			best_fitnesses["JGG"] = [jgg.get_best_fitness()]
 
 		if SAVE_HISTORY_CSV:
 			filename = "benchmark/{0}_jgg_{1}_{2}.csv".format(datestr, name, i)
@@ -69,18 +66,15 @@ for problem in PROBLEMS:
 		fsjgg.choose_population_to_jgg =\
 			fsjgg.choose_population_to_jgg_not_replace
 		result = fsjgg.until(GOAL, MAX_EVAL_COUNT)
-		if result:
-			if "入替無" in eval_counts:
-				eval_counts["入替無"].append(fsjgg.get_eval_count())
-			else:
-				eval_counts["入替無"] = [fsjgg.get_eval_count()]
+		if "入替無" in best_fitnesses:
+			best_fitnesses["入替無"].append(fsjgg.get_best_fitness())
 		else:
-			print("入替無 failed", randseed)
+			best_fitnesses["入替無"] = [fsjgg.get_best_fitness()]
 
 		if SAVE_HISTORY_CSV:
 			filename = "benchmark/{0}_入替無_{1}_{2}.csv".format(datestr, name, i)
 			with open(filename, "w") as f:
-				for c, v in fsjgg.history.items():
+				for c, v in fsjgg.jgg.history.items():
 					f.write("{0},{1}\n".format(c, v))
 				f.close()
 
@@ -89,18 +83,15 @@ for problem in PROBLEMS:
 		fsjgg.choose_population_to_jgg =\
 			fsjgg.choose_population_to_jgg_replace_rand_parents_by_elites
 		result = fsjgg.until(GOAL, MAX_EVAL_COUNT)
-		if result:
-			if "親全部" in eval_counts:
-				eval_counts["親全部"].append(fsjgg.get_eval_count())
-			else:
-				eval_counts["親全部"] = [fsjgg.get_eval_count()]
+		if "親全部" in best_fitnesses:
+			best_fitnesses["親全部"].append(fsjgg.get_best_fitness())
 		else:
-			print("親全部 failed", randseed)
+			best_fitnesses["親全部"] = [fsjgg.get_best_fitness()]
 
 		if SAVE_HISTORY_CSV:
 			filename = "benchmark/{0}_親全部_{1}_{2}.csv".format(datestr, name, i)
 			with open(filename, "w") as f:
-				for c, v in fsjgg.history.items():
+				for c, v in fsjgg.jgg.history.items():
 					f.write("{0},{1}\n".format(c, v))
 				f.close()
 
@@ -109,18 +100,15 @@ for problem in PROBLEMS:
 		fsjgg.choose_population_to_jgg =\
 			fsjgg.choose_population_to_jgg_replace_rand_by_elites
 		result = fsjgg.until(GOAL, MAX_EVAL_COUNT)
-		if result:
-			if "ラ" in eval_counts:
-				eval_counts["ラ"].append(fsjgg.get_eval_count())
-			else:
-				eval_counts["ラ"] = [fsjgg.get_eval_count()]
+		if "ラ" in best_fitnesses:
+			best_fitnesses["ラ"].append(fsjgg.get_best_fitness())
 		else:
-			print("ラ failed", randseed)
+			best_fitnesses["ラ"] = [fsjgg.get_best_fitness()]
 
 		if SAVE_HISTORY_CSV:
 			filename = "benchmark/{0}_ラ_{1}_{2}.csv".format(datestr, name, i)
 			with open(filename, "w") as f:
-				for c, v in fsjgg.history.items():
+				for c, v in fsjgg.jgg.history.items():
 					f.write("{0},{1}\n".format(c, v))
 				f.close()
 
@@ -129,22 +117,19 @@ for problem in PROBLEMS:
 		fsjgg.choose_population_to_jgg =\
 			fsjgg.choose_population_to_jgg_replace_losed_by_elites
 		result = fsjgg.until(GOAL, MAX_EVAL_COUNT)
-		if result:
-			if "劣" in eval_counts:
-				eval_counts["劣"].append(fsjgg.get_eval_count())
-			else:
-				eval_counts["劣"] = [fsjgg.get_eval_count()]
+		if "劣" in best_fitnesses:
+			best_fitnesses["劣"].append(fsjgg.get_best_fitness())
 		else:
-			print("劣 failed", randseed)
+			best_fitnesses["劣"] = [fsjgg.get_best_fitness()]
 
 		if SAVE_HISTORY_CSV:
 			filename = "benchmark/{0}_劣_{1}_{2}.csv".format(datestr, name, i)
 			with open(filename, "w") as f:
-				for c, v in fsjgg.history.items():
+				for c, v in fsjgg.jgg.history.items():
 					f.write("{0},{1}\n".format(c, v))
 				f.close()
 
-	for method_name, eval_count in eval_counts.items():
+	for method_name, eval_count in best_fitnesses.items():
 		print(method_name, np.average(eval_count), LOOP_COUNT - len(eval_count))
 
 		if SAVE_COUNTS_CSV:
